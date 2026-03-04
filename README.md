@@ -32,7 +32,7 @@ Essa abordagem permite:
 
 ## 🧠 Arquitetura da Solução
 
-![Workflow](docs/workflow-agente-pessoal.png)
+![Workflow](docs/workflow-geral.jpg)
 
 A arquitetura foi desenhada de forma **modular e desacoplada**, seguindo o padrão de **orquestração de agentes**.
 
