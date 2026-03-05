@@ -73,6 +73,8 @@ Responsável pela gestão completa da caixa de entrada.
 
 Integração com **Gmail API**.
 
+![Workflow](docs/workflow-geral.jpg)
+
 ---
 
 ### 📅 Agente de Calendário
@@ -134,16 +136,6 @@ Integração com **Google Contacts API**.
 - Centralização de tarefas operacionais
 - Base para integração com WhatsApp ou Telegram
 - Suporte a equipes administrativas
-
----
-
-## ⭐ Diferenciais do Projeto
-
-- Arquitetura baseada em agentes
-- Orquestração inteligente de tarefas
-- Separação clara entre decisão e execução
-- Fácil extensibilidade
-- Projeto reutilizável e escalável
 
 ---
 
