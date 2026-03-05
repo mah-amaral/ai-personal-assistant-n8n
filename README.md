@@ -73,7 +73,7 @@ Responsável pela gestão completa da caixa de entrada.
 
 Integração com **Gmail API**.
 
-![Workflow](docs/workflow-geral.jpg)
+![Workflow](docs/workflow-agente-email.jpg)
 
 ---
 
@@ -89,6 +89,8 @@ Responsável pelo gerenciamento de compromissos e eventos.
 
 Integração com **Google Calendar API**.
 
+![Workflow](docs/workflow-agente-calendario.jpg)
+
 ---
 
 ### 👤 Agente de Contatos
@@ -102,6 +104,8 @@ Responsável pela gestão da base de contatos do usuário.
 - Atualizar informações existentes
 
 Integração com **Google Contacts API**.
+
+![Workflow](docs/workflow-agente-contatos.jpg)
 
 ---
 
