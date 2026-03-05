@@ -1,4 +1,4 @@
-# Case de Portfólio — Assistente Pessoal com IA (n8n)
+# Assistente Pessoal com IA (n8n)
 
 ## 🎯 Contexto do Problema
 
@@ -144,16 +144,6 @@ Integração com **Google Contacts API**.
 - Separação clara entre decisão e execução
 - Fácil extensibilidade
 - Projeto reutilizável e escalável
-
----
-
-## 🔮 Possíveis Evoluções
-
-- Integração com WhatsApp e Telegram
-- Memória de longo prazo
-- Controle de permissões por usuário
-- Dashboard de atividades
-- Logs e monitoramento avançado
 
 ---
 
