@@ -1,0 +1,397 @@
+{
+  "name": "01 AgenteEmail",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "39c2f302-03be-4464-a17a-d7cc481d6d44",
+              "name": "=response",
+              "value": "={{$json.output}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2765e900-6314-45a8-8152-caf8c01e6d42",
+      "name": "Sucesso",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1440,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ab380a2-a8d3-421c-ab4e-748ea8fb7904",
+              "name": "response",
+              "value": "Unable to perform task. Please try again.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b91aa3d6-3503-4e91-8348-fd1829a7ba4c",
+      "name": "Erro",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1440,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2304,
+        -352
+      ],
+      "id": "0da3095f-91a9-4310-8046-be83ecf02bfc",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-5.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -2176,
+        -96
+      ],
+      "id": "ce890e6d-270e-4dd0-ac60-404228d6d23b",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "5IoIwhCyb3MV4qCM",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $fromAI(\"emailAddress\") }}",
+        "subject": "={{ $fromAI(\"subject\") }}",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1952,
+        -96
+      ],
+      "id": "19658d49-1ce5-412d-a795-e928139c90e2",
+      "name": "enviarEmail",
+      "webhookId": "86c8c4b1-13bb-4ebe-acb9-30e1d7082d55",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $fromAI(\"ID\",\"the message ID\") }}",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1696,
+        -96
+      ],
+      "id": "0423cf14-42e8-47a7-9f80-5641e1b894a3",
+      "name": "responderEmail",
+      "webhookId": "114785e6-a859-432b-81b4-c490c1c35b1c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $fromAI(\"ID\",\"the ID of the message\") }}",
+        "labelIds": "={{ $fromAI(\"labelID\") }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1776,
+        96
+      ],
+      "id": "748e6716-be75-4218-a3c5-fbf873fe6cd6",
+      "name": "adicionarEtiqueta",
+      "webhookId": "0e951529-2e6d-40bf-ac40-fc0947e242e2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": "={{ $fromAI(\"limit\",\"how many emails the user wants\") }}",
+        "simple": false,
+        "filters": {
+          "sender": "={{ $fromAI(\"sender\",\"who the emails are from\") }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1568,
+        -96
+      ],
+      "id": "107d8805-21f3-4c27-bc88-b3832dc4daf8",
+      "name": "buscarEmails",
+      "webhookId": "af4b3298-9037-44b0-aa12-2acbfbb5e66f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1952,
+        96
+      ],
+      "id": "cf587fc7-a4e2-4433-a707-1a023b69dfd0",
+      "name": "buscarEtiquetas",
+      "webhookId": "9e08b59e-792d-4566-83f1-9263c9ad86ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsUnread",
+        "messageId": "={{ $fromAI(\"messageID\") }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1600,
+        96
+      ],
+      "id": "5bab5511-b62f-4449-b452-b1f3ebf2de4d",
+      "name": "marcarComoNaoVisualizado",
+      "webhookId": "a35af9d8-f67d-4ff9-803f-59ec6356e795",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $fromAI(\"subject\") }}",
+        "emailType": "html",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "sendTo": "={{ $fromAI(\"emailAddress\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1824,
+        -96
+      ],
+      "id": "9925b1a9-2506-467f-9dd3-39663015387e",
+      "name": "criarEsboco",
+      "webhookId": "17016bce-d7d7-428a-a56c-f6ea122db8be",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yf4UONXsTkShRa6a",
+          "name": "Gmail Demonstração"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}\n",
+        "options": {
+          "systemMessage": "# VISÃO GERAL\nVocê é um Agente Especialista em Gerenciamento de E-mails.\nSeu papel é executar ações relacionadas a e-mails com base em instruções já validadas pelo Agente Orquestrador.\n\nVocê NÃO decide o que deve ser feito — apenas EXECUTA.\nVocê NÃO solicita informações adicionais ao usuário.\nVocê NÃO delega tarefas para outros agentes.\n\nTodos os e-mails devem:\n- Ser formatados profissionalmente em HTML\n- Conter linguagem clara, objetiva e profissional\n- Ser assinados como:\n  \"Matheus Amaral\"\n\n---\n\n## FERRAMENTAS DISPONÍVEIS\n- **enviarEmail**\n  Use para enviar e-mails prontos.\n\n- **criarEsboco**\n  Use quando for solicitado apenas um rascunho (não enviar).\n\n- **buscarEmails**\n  Use para localizar e-mails existentes (necessário para obter IDs).\n\n- **buscarEtiquetas**\n  Use para recuperar etiquetas disponíveis.\n\n- **marcarComoNaoVisualizado**\n  Use para marcar um e-mail como não lido.\n  Requer o ID da mensagem (obter previamente com buscarEmails).\n\n- **adicionarEtiqueta**\n  Use para adicionar uma etiqueta a um e-mail.\n  Requer:\n  1. ID do e-mail (buscarEmails)\n  2. ID da etiqueta (buscarEtiquetas)\n\n- **responderEmail**\n  Use para responder a um e-mail existente.\n  Requer o ID da mensagem (buscarEmails).\n\n---\n\n## RESPONSABILIDADES DO AGENTE\n1. Executar exatamente a ação solicitada.\n2. Garantir que todos os pré-requisitos técnicos estejam atendidos antes de agir.\n3. Utilizar as ferramentas corretas na ordem correta.\n4. Manter o padrão de formatação e assinatura.\n5. Retornar apenas a confirmação da ação executada.\n\n---\n\n## REGRAS IMPORTANTES\n- Nunca crie conteúdo fora do que foi solicitado.\n- Nunca altere o tom ou intenção do e-mail recebido.\n- Nunca invente IDs, e-mails ou etiquetas.\n- Se uma ação exigir um ID e ele não estiver disponível:\n  - Utilize a ferramenta apropriada para obtê-lo primeiro.\n- Nunca chame agentes externos ou a ferramenta Think.\n\n---\n\n## FLUXOS PADRÃO\n\n### Enviar novo e-mail\n1. Receber instrução com destinatário, assunto e corpo.\n2. Formatar o conteúdo em HTML.\n3. Assinar como \"Matheus Amaral\".\n4. Executar **enviarEmail**.\n\n---\n\n### Criar rascunho\n1. Receber conteúdo do e-mail.\n2. Formatar em HTML.\n3. Assinar.\n4. Executar **criarEsboco**.\n\n---\n\n### Responder e-mail\n1. Executar **buscarEmails** para obter o ID.\n2. Formatar a resposta em HTML.\n3. Assinar.\n4. Executar **responderEmail** com o ID correto.\n\n---\n\n### Marcar como não lido\n1. Executar **buscarEmails**.\n2. Obter o ID do e-mail.\n3. Executar **marcarComoNaoVisualizado**.\n\n---\n\n### Adicionar etiqueta\n1. Executar **buscarEmails**.\n2. Executar **buscarEtiquetas**.\n3. Executar **adicionarEtiqueta** com os IDs corretos.\n\n---\n\n## SAÍDA PADRÃO\nApós concluir qualquer ação, responda apenas com:\n- Confirmação objetiva da ação executada\n- Sem explicações técnicas\n- Sem informações extras\n\nExemplo:\n\"O e-mail foi enviado com sucesso.\"\n\"O rascunho foi criado.\"\n\"A etiqueta foi adicionada ao e-mail.\"\n\n---\n\n## CONTEXTO\nData e hora atual: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1968,
+        -352
+      ],
+      "id": "fd3f4c17-0c97-49ff-bf79-8aee546ea39d",
+      "name": "AgenteEmail"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enviarEmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buscarEtiquetas": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "criarEsboco": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "responderEmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buscarEmails": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "adicionarEtiqueta": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "marcarComoNaoVisualizado": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AgenteEmail": {
+      "main": [
+        [
+          {
+            "node": "Sucesso",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "7f022cec-e7a0-48b6-8b33-19ccaf931d87",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a430ae842637196e80fa44ca09445131d7ea5165ccf508fbbdd704059d905fd1"
+  },
+  "id": "nsJJJxnHRjoGquxWpgyvR",
+  "tags": []
+}

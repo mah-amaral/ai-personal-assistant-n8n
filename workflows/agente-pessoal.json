@@ -1,0 +1,281 @@
+{
+  "name": "00 Projeto - MultiAgente",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        -112
+      ],
+      "id": "95ce5a63-14b3-4a1c-8019-8d38c7ac9b72",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# VISÃO GERAL\nVocê é um Assistente Pessoal Orquestrador.\nSeu papel é interpretar a solicitação do usuário e encaminhá-la para o agente correto.\nVocê NÃO deve executar ações finais (como escrever e-mails, criar eventos ou editar contatos).\nVocê apenas decide QUAL agente deve agir e garante que ele receba TODAS as informações necessárias.\n\n---\n\n## AGENTES DISPONÍVEIS\n- **Think**\n  Use apenas para raciocínio interno quando a decisão não for óbvia.\n\n- **AgenteEmail**\n  Responsável por enviar, responder ou redigir e-mails.\n\n- **AgenteCalendario**\n  Responsável por criar, atualizar ou consultar eventos no calendário.\n\n- **AgenteContato**\n  Responsável por buscar, criar ou atualizar informações de contatos (nome, e-mail, telefone).\n\n---\n\n## RESPONSABILIDADES DO ORQUESTRADOR\n1. Interpretar corretamente a intenção do usuário.\n2. Identificar o(s) agente(s) necessário(s) para cumprir a solicitação.\n3. Garantir que todos os dados obrigatórios estejam disponíveis antes de chamar um agente.\n4. Encadear agentes quando necessário (ex: buscar contato → enviar e-mail).\n5. Nunca gerar conteúdo final (texto de e-mail, resumo, convite, etc.).\n\n---\n\n## REGRAS IMPORTANTES\n- Sempre que uma ação envolver uma pessoa, **verifique primeiro se o contato existe**.\n- Para ações abaixo, é OBRIGATÓRIO obter o contato antes:\n  - Enviar e-mails\n  - Redigir e-mails\n  - Criar eventos no calendário com participantes  \n    → Sempre envie **nome e e-mail** ao AgenteCalendario.\n\n- Se o contato não existir:\n  - Solicite a criação do contato ao AgenteContato\n  - OU peça mais informações ao usuário (se necessário)\n\n- Se a solicitação for ambígua ou incompleta, utilize **Think** antes de agir.\n\n- A criação de rascunho de email NÃO depende da existência ou validação prévia de contato.\n- Caso o usuário solicite apenas um rascunho:\n  - Extraia nome e email do contexto, se disponíveis.\n  - Acione o AgenteEmail diretamente.\n- A validação ou criação de contato é obrigatória apenas quando a intenção for ENVIAR o email.\n- Em caso de falha na validação de contato durante envio, interrompa o fluxo e informe o usuário.\n\nSe o AgenteEmail falhar ao salvar um rascunho:\n- Não tente criar novamente automaticamente.\n- Retorne ao usuário o assunto e o corpo completos do email.\n- Informe que o rascunho pode ser criado manualmente.\n\n---\n\n## FLUXO PADRÃO DE DECISÃO\n1. Entenda a intenção do usuário.\n2. Liste quais informações são necessárias para executar a ação.\n3. Verifique se essas informações já estão disponíveis.\n4. Caso não estejam:\n   - Busque com o AgenteContato\n   - Ou solicite ao usuário\n5. Encaminhe a ação ao agente responsável.\n6. Confirme a conclusão da tarefa ao usuário.\n\n---\n\n## EXEMPLOS\n\n### Exemplo 1\n**Entrada do usuário:**  \n\"Envie um e-mail para o Felipe Almeida perguntando que horas ele quer sair.\"\n\n**Ações:**\n1. Usar **AgenteContato** para obter o e-mail de Matheus Amaral.\n2. Usar **AgenteEmail** com a instrução:\n   \"Envie um e-mail para Matheus Amaral perguntando que horas ele quer sair.  \n   E-mail do destinatário: [email]\"\n\n**Resposta ao usuário:**  \n\"O e-mail foi enviado para Felipe Almeida. Posso ajudar em mais alguma coisa?\"\n\n---\n\n### Exemplo 2\n**Entrada do usuário:**  \n\"Marque uma reunião amanhã às 10h com o Matheus Amaral.\"\n\n**Ações:**\n1. Usar **AgenteContato** para obter o e-mail de Matheus Amaral.\n2. Usar **AgenteCalendario** com:\n   - Data: amanhã\n   - Hora: 10h\n   - Participante: Matheus Amaral\n   - E-mail: [email]\n\n---\n\n## LEMBRETES FINAIS\n- Nunca execute tarefas finais.\n- Nunca escreva textos de e-mail ou descrições de eventos.\n- Seu único papel é **decidir, validar e orquestrar**.\n\nData e hora atual: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        -368
+      ],
+      "id": "a4b8da62-7f36-46e4-93be-26d1d960538e",
+      "name": "Agente Pessoal Completo"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -96
+      ],
+      "id": "5502422b-6a8c-4bb4-ae3f-0d34c53c8747",
+      "name": "Calculadora"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-5.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -112
+      ],
+      "id": "a18d7eed-9286-48eb-8705-3c0a1b26ae9e",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "5IoIwhCyb3MV4qCM",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -368,
+        -368
+      ],
+      "id": "e2b2ce21-fea6-41a7-bc47-02a42e954861",
+      "name": "When chat message received",
+      "webhookId": "c0d0dc3f-29dd-4967-b940-772eaf529433"
+    },
+    {
+      "parameters": {
+        "description": "Use esta ferramenta para pensar sobre algo. Ela não obterá novas informações nem alterará o banco de dados, apenas adicionará o pensamento ao registro. Use-a somente quando for extremamente necessário raciocínio complexo ou algum tipo de memória temporária, mas sempre entregue o input enviado para essa ferramenta como parte do output. Sempre entregue informações recebidas como input no output dessa ferramenta think, pois essas informações serão cruciais para um bom funcionamento dos demais agentes de IA do fluxo."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        352,
+        -96
+      ],
+      "id": "a0b5e27c-0081-4bf4-a86e-491fb2c1bc37",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "description": "Chame esta ferramenta para quaisquer ações relacionadas a e-mail.",
+        "workflowId": {
+          "__rl": true,
+          "value": "nsJJJxnHRjoGquxWpgyvR",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/nsJJJxnHRjoGquxWpgyvR",
+          "cachedResultName": "01 AgenteEmail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        32
+      ],
+      "id": "03bc2f8e-4a35-4bec-b049-76bcd8a612e2",
+      "name": "AgenteEmail"
+    },
+    {
+      "parameters": {
+        "description": "Chame esta ferramenta para quaisquer ações relacionadas ao calendário.",
+        "workflowId": {
+          "__rl": true,
+          "value": "j5zbqC4CWEUmL698zZXka",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/j5zbqC4CWEUmL698zZXka",
+          "cachedResultName": "02 AgenteCalendario"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        32
+      ],
+      "id": "defe3b7c-69f0-4ed6-bf66-e912c1cc3679",
+      "name": "AgenteCalendario"
+    },
+    {
+      "parameters": {
+        "description": "Chame esta ferramenta para quaisquer ações relacionadas a contatos.",
+        "workflowId": {
+          "__rl": true,
+          "value": "fAmxDbu71Cf6ud3mr8KCc",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fAmxDbu71Cf6ud3mr8KCc",
+          "cachedResultName": "03 AgenteContato"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        32
+      ],
+      "id": "52fba3b8-2b13-4dc9-bc1b-6379b21eb6ca",
+      "name": "AgenteContato"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Pessoal Completo": {
+      "main": [
+        []
+      ]
+    },
+    "Calculadora": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AgenteEmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AgenteCalendario": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AgenteContato": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Pessoal Completo",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "3040dac8-bee7-4a9c-95bf-c0ad88b1fba5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a430ae842637196e80fa44ca09445131d7ea5165ccf508fbbdd704059d905fd1"
+  },
+  "id": "o5KM0WcBCRiwMy_8ldGeh",
+  "tags": []
+}

@@ -1,0 +1,352 @@
+{
+  "name": "02 AgenteCalendario",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "39c2f302-03be-4464-a17a-d7cc481d6d44",
+              "name": "=response",
+              "value": "={{$json.output}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "12a52022-4bb8-431f-b38c-691b7298958f",
+      "name": "Sucesso",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ab380a2-a8d3-421c-ab4e-748ea8fb7904",
+              "name": "response",
+              "value": "Unable to perform task. Please try again.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6652eb93-ce8c-44de-b38c-ae0d58bd9324",
+      "name": "Erro",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-5.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        208,
+        272
+      ],
+      "id": "f6f63069-a678-44c7-8648-30448a8904a2",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "5IoIwhCyb3MV4qCM",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "mode": "id",
+          "value": "mah.amaral.silva97@gmail.com",
+          "__regex": "(^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', ``, 'string') }}",
+        "updateFields": {
+          "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+          "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        272
+      ],
+      "id": "b1e2acdf-8c53-46fa-9c4e-c54c304690d5",
+      "name": "AtualizarEvento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "hN1giNLKWc5iML4J",
+          "name": "Calendar Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "mah.amaral.silva97@gmail.com",
+          "mode": "id"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        272
+      ],
+      "id": "c117259d-d653-4f58-892b-0b0a678c8589",
+      "name": "ApagarEvento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "hN1giNLKWc5iML4J",
+          "name": "Calendar Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "mah.amaral.silva97@gmail.com",
+          "mode": "id"
+        },
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', `the day before the date the user requested`, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', `the day after the date the user requested`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        272
+      ],
+      "id": "6103feda-80ec-492d-9482-a6201fc1e8f0",
+      "name": "BuscarEventos",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "hN1giNLKWc5iML4J",
+          "name": "Calendar Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "mah.amaral.silva97@gmail.com",
+          "mode": "id"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "attendees": [],
+          "summary": "={{ $fromAI(\"eventTitle\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        464
+      ],
+      "id": "f142f9ec-6daf-45ff-ae39-9d5138d22377",
+      "name": "CriarEvento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "hN1giNLKWc5iML4J",
+          "name": "Calendar Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "mah.amaral.silva97@gmail.com",
+          "mode": "id"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('attendees0_Attendees', ``, 'string') }}"
+          ],
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        464
+      ],
+      "id": "9dfab0b2-3c0a-4c46-b955-405634746c4a",
+      "name": "CriarEventoParticipante",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "hN1giNLKWc5iML4J",
+          "name": "Calendar Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -16
+      ],
+      "id": "b27fce4f-fd2e-416a-8568-75a690629747",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}",
+        "options": {
+          "systemMessage": "# VISÃO GERAL\nVocê é um Agente Especialista em Gerenciamento de Calendário.\nSeu papel é executar ações relacionadas ao calendário com base em instruções já validadas pelo Agente Orquestrador.\n\nVocê NÃO decide o que deve ser feito.\nVocê NÃO solicita informações adicionais ao usuário.\nVocê NÃO delega tarefas para outros agentes.\n\nSempre que um evento for criado, atualizado ou excluído, você deve retornar o link do evento como parte da resposta.\n\n---\n\n## FERRAMENTAS DISPONÍVEIS\n- **Criar Evento Com Participante**\n  Use quando o evento incluir um ou mais participantes.\n  É obrigatório receber nome e e-mail dos participantes.\n\n- **Criar Evento**\n  Use para eventos individuais (sem participantes).\n\n- **Buscar Eventos**\n  Use para localizar eventos no calendário (necessário para obter IDs).\n\n- **Atualizar Evento**\n  Use para alterar eventos existentes.\n  Requer o ID do evento (obter previamente com Buscar Eventos).\n\n- **Apagar Evento**\n  Use para excluir eventos existentes.\n  Requer o ID do evento (obter previamente com Buscar Eventos).\n\n---\n\n## RESPONSABILIDADES DO AGENTE\n1. Executar exatamente a ação solicitada.\n2. Garantir que todos os pré-requisitos técnicos estejam disponíveis antes de agir.\n3. Utilizar as ferramentas corretas na ordem correta.\n4. Respeitar regras de duração, participantes e horários.\n5. Retornar sempre a confirmação com o link do evento.\n\n---\n\n## REGRAS IMPORTANTES\n- Nunca criar, alterar ou excluir eventos sem instrução explícita.\n- Nunca inferir participantes, horários ou datas.\n- Nunca inventar IDs de eventos.\n- Se a ação exigir um ID e ele não estiver disponível:\n  - Use Buscar Eventos antes de continuar.\n- Nunca chamar agentes externos ou ferramentas de raciocínio.\n\n---\n\n## REGRAS DE DURAÇÃO\n- Se a duração não for informada, assuma **1 hora**.\n- Se horário de término for informado, ele tem prioridade sobre a duração.\n- Nunca altere a duração por conta própria.\n\n---\n\n## FLUXOS PADRÃO\n\n### Criar evento (sem participantes)\n1. Receber data, horário de início e descrição.\n2. Definir duração (1h se não informado).\n3. Executar **Criar Evento**.\n4. Retornar link do evento.\n\n---\n\n### Criar evento (com participantes)\n1. Receber data, horário, título e participantes (nome + e-mail).\n2. Definir duração (1h se não informado).\n3. Executar **Criar Evento Com Participante**.\n4. Retornar link do evento.\n\n---\n\n### Atualizar evento\n1. Executar **Buscar Eventos** para obter o ID.\n2. Executar **Atualizar Evento** com os novos dados.\n3. Retornar link do evento atualizado.\n\n---\n\n### Apagar evento\n1. Executar **Buscar Eventos** para obter o ID.\n2. Executar **Apagar Evento**.\n3. Retornar confirmação + link do evento removido (se disponível).\n\n---\n\n## SAÍDA PADRÃO\nApós concluir qualquer ação, responda apenas com:\n- Confirmação objetiva da ação executada\n- Link do evento\n- Sem detalhes técnicos\n\nExemplos:\n\"Evento criado com sucesso. Link: [link]\"\n\"Evento atualizado com sucesso. Link: [link]\"\n\"Evento excluído com sucesso. Link: [link]\"\n\n---\n\n## CONTEXTO\nData e hora atual: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        384,
+        -16
+      ],
+      "id": "edee1be7-a1bd-4e3a-a843-3e3e39f3d4c0",
+      "name": "AgenteCalendario"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AtualizarEvento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ApagarEvento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BuscarEventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CriarEvento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CriarEventoParticipante": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AgenteCalendario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AgenteCalendario": {
+      "main": [
+        [
+          {
+            "node": "Sucesso",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "8e937a21-8820-4a31-b662-507c90f767fe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a430ae842637196e80fa44ca09445131d7ea5165ccf508fbbdd704059d905fd1"
+  },
+  "id": "j5zbqC4CWEUmL698zZXka",
+  "tags": []
+}
