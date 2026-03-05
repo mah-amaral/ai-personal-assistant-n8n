@@ -1,0 +1,349 @@
+{
+  "name": "03 AgenteContato",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "fields": [
+          "addresses",
+          "emailAddresses",
+          "names",
+          "phoneNumbers",
+          "organizations",
+          "birthdays",
+          "nicknames",
+          "biographies",
+          "urls",
+          "events"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleContactsTool",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        704
+      ],
+      "id": "a5847c8d-a2b6-4a57-81f5-87347990b3d2",
+      "name": "Buscar Todos os Contatos do Google",
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "XUcqqPZS8S5tUNq7",
+          "name": "Contacts Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 1,
+        "fields": [
+          "addresses",
+          "emailAddresses",
+          "names",
+          "phoneNumbers",
+          "organizations",
+          "birthdays",
+          "nicknames",
+          "biographies",
+          "urls",
+          "events"
+        ],
+        "useQuery": true,
+        "query": "={{ $fromAI('name', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.googleContactsTool",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        704
+      ],
+      "id": "2366cc90-d4c2-4fb4-a6d8-17b8ca7a562e",
+      "name": "Buscar Contatos",
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "XUcqqPZS8S5tUNq7",
+          "name": "Contacts Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "contactId": "={{ $fromAI('Contact_ID') }}",
+        "updateFields": {
+          "familyName": "={{ $fromAI('familyName') }}",
+          "givenName": "={{ $fromAI('givenName') }}",
+          "birthday": "={{ $fromAI('Birthday') }}",
+          "emailsUi": {
+            "emailsValues": [
+              {
+                "type": "home",
+                "value": "={{ $fromAI('emailAddress') }}"
+              }
+            ]
+          },
+          "phoneUi": {
+            "phoneValues": [
+              {
+                "type": "mobile",
+                "value": "={{ $fromAI('phoneNumber') }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleContactsTool",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        704
+      ],
+      "id": "c8f7e577-365f-4dc0-af70-b507335df0f5",
+      "name": "Atualizar Contato",
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "XUcqqPZS8S5tUNq7",
+          "name": "Contacts Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "familyName": "={{ $fromAI('Family_Name', ``, 'string') }}",
+        "givenName": "={{ $fromAI('Given_Name', ``, 'string') }}",
+        "additionalFields": {
+          "birthday": "={{ $fromAI('Birthday', `Apenas adicione um aniversário caso seja requisitado. Não adicione um aniversário caso isso não tenha sido pedido.`, 'string') }}",
+          "emailsUi": {
+            "emailsValues": [
+              {
+                "type": "work",
+                "value": "={{ $fromAI('emailsValues0_Value', ``, 'string') }}"
+              }
+            ]
+          },
+          "biographies": "={{ $fromAI('Notes', ``, 'string') }}",
+          "phoneUi": {
+            "phoneValues": [
+              {
+                "type": "mobile",
+                "value": "={{ $fromAI('phoneValues0_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleContactsTool",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        704
+      ],
+      "id": "798efb34-866d-4156-ba19-7a4da8e08d27",
+      "name": "Criar Contato",
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "XUcqqPZS8S5tUNq7",
+          "name": "Contacts Portfolio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4f360190-a717-4a93-8336-d03ea65975d5",
+              "name": "response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        256
+      ],
+      "id": "583c00bc-6bfc-4ec9-9e88-0b0b4a294c04",
+      "name": "Sucesso"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4f360190-a717-4a93-8336-d03ea65975d5",
+              "name": "response",
+              "value": "An error occurred. Please try again.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        448
+      ],
+      "id": "a63dfc9d-9019-41c2-9525-90447f5f3336",
+      "name": "Erro"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -944,
+        336
+      ],
+      "id": "f8a30414-c8c5-43f3-a65d-0140ef7937ef",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-5.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        528
+      ],
+      "id": "45471dc7-5455-4525-b955-a80b5846a787",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "5IoIwhCyb3MV4qCM",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}",
+        "options": {
+          "systemMessage": "=# VISÃO GERAL\nVocê é um Agente Especialista em Gerenciamento de Contatos.\nSeu papel é buscar, criar ou atualizar contatos no Google Contacts com base em instruções já validadas pelo Agente Orquestrador.\n\nVocê NÃO decide o que deve ser feito.\nVocê NÃO solicita informações adicionais ao usuário.\nVocê NÃO delega tarefas para outros agentes.\n\n---\n\n## FERRAMENTAS DISPONÍVEIS\n\n### 1. Buscar Contatos\n- Use para localizar um contato específico no Google Contacts.\n- O contato pode ser buscado por:\n  - Primeiro nome\n  - Sobrenome\n  - Nome completo\n- Esta ferramenta deve ser **sempre utilizada primeiro**.\n\n---\n\n### 2. Buscar Todos os Contatos do Google\n- Recupera todos os contatos armazenados no Google Contacts.\n- Use **somente se**:\n  - Buscar Contatos não retornar resultados relevantes.\n- Nunca utilize esta ferramenta como primeira opção.\n\n---\n\n### 3. Atualizar Contato\n- Use para atualizar informações de um contato existente.\n- É obrigatório possuir o **Contact ID**, obtido via Buscar Contatos ou Buscar Todos.\n- Nunca presuma ou invente um Contact ID.\n\n---\n\n### 4. Criar Contato\n- Use para criar um novo contato.\n- Antes de criar:\n  - Execute Buscar Contatos\n  - Execute Buscar Todos os Contatos do Google (se necessário)\n- Só crie um contato se não houver correspondência existente.\n\n---\n\n## RESPONSABILIDADES DO AGENTE\n1. Executar exatamente a ação solicitada.\n2. Evitar a criação de contatos duplicados.\n3. Utilizar as ferramentas corretas na ordem correta.\n4. Garantir integridade e consistência dos dados.\n5. Retornar confirmação objetiva da ação executada.\n\n---\n\n## REGRAS IMPORTANTES\n- Nunca criar um contato sem verificar se ele já existe.\n- Nunca atualizar um contato sem um Contact ID válido.\n- Nunca inferir dados (e-mail, telefone, empresa, etc.).\n- Nunca corrigir ou “melhorar” dados fornecidos.\n- Nunca chamar agentes externos ou ferramentas de raciocínio.\n\n---\n\n## FLUXOS PADRÃO\n\n### Buscar contato\n1. Executar **Buscar Contatos**.\n2. Se encontrado:\n   - Retornar as informações disponíveis.\n3. Se não encontrado:\n   - Executar **Buscar Todos os Contatos do Google**.\n\n---\n\n### Criar contato\n1. Executar **Buscar Contatos**.\n2. Executar **Buscar Todos os Contatos do Google** (se necessário).\n3. Confirmar ausência de correspondência.\n4. Executar **Criar Contato**.\n5. Retornar confirmação da criação.\n\n---\n\n### Atualizar contato\n1. Executar **Buscar Contatos**.\n2. Obter o Contact ID correto.\n3. Executar **Atualizar Contato**.\n4. Retornar confirmação da atualização.\n\n---\n\n## SAÍDA PADRÃO\nApós qualquer ação, responda apenas com:\n- Confirmação objetiva do que foi feito\n- Dados relevantes (nome, e-mail, telefone, se aplicável)\n- Sem explicações técnicas\n\n---\n\n## CONTEXTO\nData e hora atual: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -688,
+        336
+      ],
+      "id": "a994d8c2-fdae-4e58-a7fc-22e1c7ed60a4",
+      "name": "AgenteContatos",
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Buscar Todos os Contatos do Google": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteContatos",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Contatos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteContatos",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Contato": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteContatos",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Contato": {
+      "ai_tool": [
+        [
+          {
+            "node": "AgenteContatos",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AgenteContatos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AgenteContatos",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AgenteContatos": {
+      "main": [
+        [
+          {
+            "node": "Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "ea7c0c09-0b54-4aac-ad8e-c639633bf246",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a430ae842637196e80fa44ca09445131d7ea5165ccf508fbbdd704059d905fd1"
+  },
+  "id": "fAmxDbu71Cf6ud3mr8KCc",
+  "tags": []
+}
